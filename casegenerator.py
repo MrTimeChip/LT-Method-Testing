@@ -20,11 +20,9 @@ class AnomalyContext:
             if random.random() > avg_impact:
                 min_seed = math.trunc(avg * 1.7 - avg / 2)
                 max_seed = math.trunc(avg + avg / 4)
-                print(min_seed, max_seed)
                 new_y[i] = random.randint(min_seed, max_seed)
             else:
                 new_y[i] = random.randint(min_y, max_y)
-            print(min_y, max_y)
         return AnomalyContext(new_x, new_y)
 
     def with_step(self, after=500, over=300, diff=5):
