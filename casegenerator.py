@@ -8,6 +8,10 @@ class AnomalyContext:
         self.x = x
         self.y = y
 
+    def using(self, x, y):
+        self.x = copy.copy(x)
+        self.y = copy.copy(y)
+
     def with_outlier(self, avg_impact=0.99):
         new_x = copy.copy(self.x)
         new_y = copy.copy(self.y)
@@ -57,3 +61,7 @@ def generate_values(min_value=60, max_value=65, amount=1500):
         x.append(i)
         y.append(value)
     return AnomalyContext(x, y)
+
+
+def empty():
+    return AnomalyContext([], [])
