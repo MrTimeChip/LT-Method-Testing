@@ -9,8 +9,7 @@ class AnomalyContext:
         self.y = y
 
     def using(self, x, y):
-        self.x = copy.copy(x)
-        self.y = copy.copy(y)
+        return AnomalyContext(copy.copy(x), copy.copy(y))
 
     def with_outlier(self, avg_impact=0.99):
         new_x = copy.copy(self.x)
