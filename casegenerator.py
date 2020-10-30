@@ -11,7 +11,7 @@ class AnomalyContext:
     def using(self, x, y):
         return AnomalyContext(copy.copy(x), copy.copy(y))
 
-    def with_outlier(self, avg_impact=0.99):
+    def with_outlier(self, avg_impact=0.99, extreme_multiplier=1):
         new_x = copy.copy(self.x)
         new_y = copy.copy(self.y)
         min_y = min(new_y)
@@ -21,8 +21,8 @@ class AnomalyContext:
         amount = len(new_y)
         for i in range(amount):
             if random.random() > avg_impact:
-                min_seed = math.trunc(avg * 1.7 - avg / 2)
-                max_seed = math.trunc(avg + avg / 4)
+                min_seed = math.trunc((avg * 1.7 - avg / 2) * extreme_multiplier)
+                max_seed = math.trunc((avg + avg / 4) * extreme_multiplier)
                 new_y[i] = random.randint(min_seed, max_seed)
             else:
                 new_y[i] = random.randint(min_y, max_y)
