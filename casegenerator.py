@@ -14,8 +14,8 @@ class AnomalyContext:
     def with_outlier(self, avg_impact=0.99, extreme_multiplier=1):
         new_x = copy.copy(self.x)
         new_y = copy.copy(self.y)
-        min_y = min(new_y)
-        max_y = max(new_y)
+        min_y = math.trunc(min(new_y))
+        max_y = math.trunc(max(new_y))
 
         avg = (min_y + max_y) // 2
         amount = len(new_y)
@@ -36,7 +36,7 @@ class AnomalyContext:
         coeff = piece
         for i in range(after, amount):
             new_y[i] += coeff
-            if coeff < diff:
+            if abs(coeff) < abs(diff):
                 coeff += piece
         return AnomalyContext(new_x, new_y)
 
