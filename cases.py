@@ -8,13 +8,13 @@ def linear_normal():
 
 def linear_with_outlier():
     x, y = casegenerator\
-        .generate_values(amount=1800)\
-        .with_random()\
+        .generate_values(amount=1800) \
+        .with_random() \
         .extract()
     x_anom, y_anom = casegenerator\
         .empty()\
         .using(x, y)\
-        .with_outlier()\
+        .with_outlier(extreme_multiplier=1.3)\
         .extract()
     return x, y, x_anom, y_anom
 
@@ -27,48 +27,50 @@ def linear_with_extreme_outliers():
     x_anom, y_anom = casegenerator\
         .empty()\
         .using(x, y)\
-        .with_outlier(extreme_multiplier=0.7)\
+        .with_outlier(extreme_multiplier=1.05)\
         .extract()
     x_final, y_final = casegenerator\
         .empty()\
         .using(x_anom, y_anom)\
-        .with_outlier(extreme_multiplier=1.2)\
+        .with_outlier(extreme_multiplier=1.4)\
         .extract()
-    return x, y, x_final, y_final
+    return x_anom, y_anom, x_final, y_final
 
 
 def linear_with_ramp_up():
     x, y = casegenerator\
-        .generate_values(amount=1800)\
+        .generate_values(amount=1800) \
+        .with_random() \
         .extract()
     x_anom, y_anom = casegenerator\
         .empty()\
         .using(x, y)\
-        .with_step(after=700, over=300, diff=10)\
-        .with_random()
+        .with_step(after=700, over=300, diff=30)\
+        .extract()
     return x, y, x_anom, y_anom
 
 
 def linear_with_ramp_down():
     x, y = casegenerator\
-        .generate_values(amount=1800)\
+        .generate_values(amount=1800) \
+        .with_random() \
         .extract()
     x_anom, y_anom = casegenerator\
         .empty()\
         .using(x, y)\
-        .with_step(after=700, over=300, diff=-10)\
-        .with_random()
+        .with_step(after=700, over=300, diff=-30)\
+        .extract()
     return x, y, x_anom, y_anom
 
 
 def linear_with_sudden_step():
     x, y = casegenerator\
-        .generate_values(amount=1800)\
+        .generate_values(amount=1800) \
+        .with_random() \
         .extract()
     x_anom, y_anom = casegenerator\
         .empty()\
         .using(x, y)\
-        .with_step(after=0, over=1, diff=20)\
-        .with_random()
+        .with_step(after=0, over=1, diff=30)\
+        .extract()
     return x, y, x_anom, y_anom
-
