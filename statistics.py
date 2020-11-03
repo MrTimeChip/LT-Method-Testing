@@ -1,4 +1,5 @@
 import numpy
+from outliers import smirnov_grubbs as grubbs
 from scipy.stats import zscore, iqr
 
 
@@ -35,3 +36,13 @@ def interquartile_range(y, y_anom):
             anomalies.append((t, x))
         t += 1
     return anomalies
+
+
+def grubbs_test(y, y_anom):
+    anomalies = []
+    indices = grubbs.max_test_indices(y_anom, alpha=.05)
+    values = grubbs.max_test_outliers(y_anom, alpha=.05)
+    for x, y in zip(indices, values):
+        anomalies.append((x, y))
+    return anomalies
+
