@@ -30,7 +30,12 @@ def check_interquartile_range():
     check_method(statistics.interquartile_range)
 
 
+def check_grubbs():
+    check_method(statistics.grubbs_test)
+
+
 if __name__ == '__main__':
     check_empirical_rule()
     check_z_score()
     check_interquartile_range()
+    check_grubbs()
