@@ -1,6 +1,11 @@
 import casegenerator
 
 
+def all_cases():
+    return [linear_normal, linear_with_outlier, linear_with_extreme_outliers,
+            linear_with_ramp_up, linear_with_ramp_down, linear_with_sudden_step]
+
+
 def linear_normal():
     x, y = casegenerator.generate_values(amount=1800).with_random().extract()
     return x, y
