@@ -8,7 +8,7 @@ def all_cases():
 
 def linear_normal():
     x, y = casegenerator.generate_values(amount=1800).with_random().extract()
-    return x, y
+    return x, y, x, y
 
 
 def linear_with_outlier():
