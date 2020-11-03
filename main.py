@@ -34,8 +34,13 @@ def check_grubbs():
     check_method(statistics.grubbs_test)
 
 
+def check_student():
+    check_method(statistics.student_test)
+
+
 if __name__ == '__main__':
-    check_empirical_rule()
-    check_z_score()
-    check_interquartile_range()
-    check_grubbs()
+    #check_empirical_rule()
+    #check_z_score()
+    #check_interquartile_range()
+    #check_grubbs()
+    check_student()
