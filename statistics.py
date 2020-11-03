@@ -1,6 +1,6 @@
 import numpy
 from outliers import smirnov_grubbs as grubbs
-from scipy.stats import zscore, iqr
+from scipy.stats import zscore, iqr, ttest_ind
 
 
 def empirical_rule(y, y_anom):
@@ -44,5 +44,23 @@ def grubbs_test(y, y_anom):
     values = grubbs.max_test_outliers(y_anom, alpha=.05)
     for x, y in zip(indices, values):
         anomalies.append((x, y))
+    return anomalies
+
+
+def student_test(y, y_anom):
+    anomalies = []
+    amount = len(y_anom)
+    window = amount // 30
+    step = window // 2
+    right_edge = window
+    alpha = 0.05
+    while right_edge < amount:
+        values_y = y[right_edge - window:right_edge]
+        values_y_anom = y_anom[right_edge - window:right_edge]
+        p, t = ttest_ind(values_y, values_y_anom)
+        if t < alpha:
+            ind = right_edge - window
+            anomalies.append((ind, y_anom[ind]))
+        right_edge += step
     return anomalies
 
