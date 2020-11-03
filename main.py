@@ -39,8 +39,8 @@ def check_student():
 
 
 if __name__ == '__main__':
-    #check_empirical_rule()
-    #check_z_score()
-    #check_interquartile_range()
-    #check_grubbs()
+    check_empirical_rule()
+    check_z_score()
+    check_interquartile_range()
+    check_grubbs()
     check_student()
