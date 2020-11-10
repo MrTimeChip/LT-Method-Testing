@@ -21,7 +21,7 @@ def linear_with_outlier():
     x_anom, y_anom = casegenerator \
         .empty() \
         .using(x, y)\
-        .with_random()\
+        .with_random(min_val=950, max_val=1050)\
         .with_outlier(extreme_multiplier=0.5) \
         .extract()
     return x, y, x_anom, y_anom
@@ -40,7 +40,7 @@ def linear_with_extreme_outliers():
     x_final, y_final = casegenerator \
         .empty() \
         .using(x_anom, y_anom) \
-        .with_random() \
+        .with_random(min_val=950, max_val=1050) \
         .with_outlier(extreme_multiplier=0.6) \
         .extract()
     return x_anom, y_anom, x_final, y_final
@@ -54,7 +54,7 @@ def linear_with_ramp_up():
     x_anom, y_anom = casegenerator \
         .empty() \
         .using(x, y) \
-        .with_random() \
+        .with_random(min_val=950, max_val=1050) \
         .with_step(after=700, over=300, diff=30) \
         .extract()
     return x, y, x_anom, y_anom
@@ -68,7 +68,7 @@ def linear_with_ramp_down():
     x_anom, y_anom = casegenerator \
         .empty() \
         .using(x, y) \
-        .with_random() \
+        .with_random(min_val=950, max_val=1050) \
         .with_step(after=700, over=300, diff=-30) \
         .extract()
     return x, y, x_anom, y_anom
@@ -82,7 +82,7 @@ def linear_with_sudden_step():
     x_anom, y_anom = casegenerator \
         .empty() \
         .using(x, y) \
-        .with_random() \
+        .with_random(min_val=950, max_val=1050) \
         .with_step(after=0, over=1, diff=30) \
         .extract()
     return x, y, x_anom, y_anom
@@ -96,7 +96,7 @@ def linear_with_rise_no_anomaly():
     x, y = casegenerator\
         .empty()\
         .using(x, y) \
-        .with_random() \
+        .with_random(min_val=950, max_val=1050) \
         .with_step(0, 200, 30)\
         .extract()
 
@@ -107,7 +107,7 @@ def linear_with_rise_with_bump_down():
     x, y, _, _ = linear_with_rise_no_anomaly()
     x_anom, y_anom = casegenerator.empty()\
         .using(x, y) \
-        .with_random() \
+        .with_random(min_val=950, max_val=1050) \
         .with_step(500, 100, -10)\
         .with_step(600, 100, 10)\
         .extract()
@@ -118,7 +118,7 @@ def linear_with_rise_with_bump_up():
     x, y, _, _ = linear_with_rise_no_anomaly()
     x_anom, y_anom = casegenerator.empty()\
         .using(x, y) \
-        .with_random() \
+        .with_random(min_val=950, max_val=1050) \
         .with_step(500, 100, 10)\
         .with_step(600, 100, -10)\
         .extract()
@@ -133,7 +133,7 @@ def periodic_with_positive_outliers():
     x_anom, y_anom = casegenerator\
         .empty()\
         .using(x, y) \
-        .with_random() \
+        .with_random(min_val=950, max_val=1050) \
         .with_outlier(extreme_multiplier=0.5)\
         .extract()
     return x, y, x_anom, y_anom
