@@ -5,7 +5,7 @@ import statistics
 import os
 
 
-def check_method(method):
+def check_method(method, plot_once=False, line_plot=False):
     all_cases = cases.all_cases()
     for case in all_cases:
         x, y, x_anom, y_anom = case()
@@ -16,12 +16,17 @@ def check_method(method):
         for t, anom in result:
             circle = ptchs.Circle((t, anom), edgecolor='red', fill=False)
             ax.add_patch(circle)
+            if line_plot:
+                plt.axvline(x=t, color='red')
+            if plot_once:
+                break
         path = f'results/{method.__name__}'
         if not os.path.isdir(path):
             os.mkdir(path)
         fig.canvas.set_window_title(title)
-        plt.savefig(f'{path}/{title}.png', bbox_inches='tight')
+        plt.savefig(f'{path}/{title}.png')
         plt.close(fig)
+
 
 
 def check_empirical_rule():
@@ -41,11 +46,11 @@ def check_grubbs():
 
 
 def check_student():
-    check_method(statistics.student_test)
+    check_method(statistics.student_test, plot_once=True, line_plot=True)
 
 
 def check_mwu():
-    check_method(statistics.mann_whitney_u_test)
+    check_method(statistics.mann_whitney_u_test, plot_once=True, line_plot=True)
 
 
 if __name__ == '__main__':
