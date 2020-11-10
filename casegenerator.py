@@ -43,12 +43,12 @@ class AnomalyContext:
                 coeff += piece
         return AnomalyContext(new_x, new_y)
 
-    def with_random(self):
+    def with_random(self, min_val=900, max_val=1100, val_delim=1000):
         new_x = copy.copy(self.x)
         new_y = copy.copy(self.y)
         amount = len(new_x)
         for i in range(amount):
-            new_y[i] *= random.randint(900, 1100)/1000
+            new_y[i] *= random.randint(min_val, max_val)/val_delim
         return AnomalyContext(new_x, new_y)
 
     def extract(self):
