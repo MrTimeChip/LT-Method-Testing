@@ -3,17 +3,21 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as ptchs
 import statistics
 import os
+import datetime
 
 
 def check_method(method, plot_once=False, line_plot=False):
     all_cases = cases.all_cases()
+    make_note(f'---{method.__name__}{"-"*10}')
     for case in all_cases:
         x, y, x_anom, y_anom = case()
         result = method(y, y_anom)
         fig, ax = plt.subplots()
         plt.plot(y_anom)
         title = f'{method.__name__}_with_{case.__name__}'
+        anom_count = 0
         for t, anom in result:
+            anom_count += 1
             circle = ptchs.Circle((t, anom), edgecolor='red', fill=False)
             ax.add_patch(circle)
             if line_plot:
@@ -26,7 +30,15 @@ def check_method(method, plot_once=False, line_plot=False):
         fig.canvas.set_window_title(title)
         plt.savefig(f'{path}/{title}.png')
         plt.close(fig)
+        if anom_count != 0:
+            make_note(f'Для {case.__name__} найдено {anom_count} аномалий.')
+        else:
+            make_note(f'Для {case.__name__} не найдено аномалий.')
 
+
+def make_note(text):
+    with open('notes.txt', 'a') as f:
+        f.write(f'{text}\n')
 
 
 def check_empirical_rule():
@@ -54,6 +66,8 @@ def check_mwu():
 
 
 if __name__ == '__main__':
+    with open('notes.txt', 'w+') as f:
+        f.write(f'Тест {datetime.datetime.now()}\n')
     check_empirical_rule()
     check_z_score()
     check_interquartile_range()
