@@ -49,6 +49,10 @@ def check_z_score():
     check_method(statistics.z_score)
 
 
+def check_z_score_with_window():
+    check_method(statistics.z_score_with_window)
+
+
 def check_interquartile_range():
     check_method(statistics.interquartile_range)
 
@@ -70,6 +74,7 @@ if __name__ == '__main__':
         f.write(f'Тест {datetime.datetime.now()}\n')
     check_empirical_rule()
     check_z_score()
+    check_z_score_with_window()
     check_interquartile_range()
     check_grubbs()
     check_student()
