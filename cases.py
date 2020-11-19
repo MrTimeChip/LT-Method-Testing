@@ -4,7 +4,8 @@ import casegenerator
 def all_cases():
     return [linear_no_anomaly, linear_with_outlier, linear_with_extreme_outliers,
             linear_with_ramp_up, linear_with_ramp_down, linear_with_sudden_step,
-            linear_with_rise_no_anomaly, linear_with_rise_with_bump_down, linear_with_rise_with_bump_up,
+            linear_with_rise_no_anomaly, linear_with_slow_shift,
+            linear_with_rise_with_bump_down, linear_with_rise_with_bump_up,
             periodic_with_negative_outliers, periodic_with_positive_outliers]
 
 
@@ -101,6 +102,21 @@ def linear_with_rise_no_anomaly():
         .extract()
 
     return x, y, x, y
+
+
+def linear_with_slow_shift():
+    x, y = casegenerator \
+        .generate_values(min_value=60, max_value=63, amount=1800) \
+        .with_random(min_val=995, max_val=1005) \
+        .extract()
+    x_anom, y_anom = casegenerator\
+        .empty()\
+        .using(x, y) \
+        .with_random(min_val=995, max_val=1005) \
+        .with_step(300, 1000, 10)\
+        .extract()
+
+    return x, y, x_anom, y_anom
 
 
 def linear_with_rise_with_bump_down():
