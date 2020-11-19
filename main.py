@@ -66,6 +66,7 @@ def check_mwu_window():
 
 
 if __name__ == '__main__':
+    notemaker.start_notemaking()
     check_empirical_rule()
     check_z_score()
     check_interquartile_range()
