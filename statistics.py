@@ -26,31 +26,6 @@ def z_score(y, y_anom):
     return anomalies
 
 
-def z_score_with_window(y, y_anom, windows_size=100):
-    anomalies = []
-    amount = len(y)
-    window = windows_size // 2
-    t = 0
-    while t < amount:
-        left_edge = t - window
-        right_edge = t + window
-        if t - window < 0:
-            left_edge = 0
-        if t + window > amount:
-            right_edge = amount
-        current_window = y_anom[left_edge: right_edge]
-        zscore_result = zscore(current_window)
-        window_t = 0
-        for x in zscore_result:
-            if x > 3:
-                anomalies.append((left_edge + window_t, current_window[window_t]))
-            window_t += 1
-        right_edge += 1
-        left_edge += 1
-        t += 1
-    return anomalies
-
-
 def interquartile_range(y, y_anom):
     anomalies = []
     median = numpy.median(y_anom)
