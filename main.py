@@ -41,10 +41,6 @@ def check_z_score():
     check_method(statistics.z_score)
 
 
-def check_z_score_with_window():
-    check_method(statistics.z_score_with_window)
-
-
 def check_interquartile_range():
     check_method(statistics.interquartile_range)
 
@@ -61,10 +57,17 @@ def check_mwu():
     check_method(statistics.mann_whitney_u_test, plot_once=True, line_plot=True)
 
 
+def check_student_window():
+    check_method(statistics.student_test_window, plot_once=True, line_plot=True)
+
+
+def check_mwu_window():
+    check_method(statistics.mann_whitney_u_test_window, plot_once=True, line_plot=True)
+
+
 if __name__ == '__main__':
     check_empirical_rule()
     check_z_score()
-    check_z_score_with_window()
     check_interquartile_range()
     check_grubbs()
     check_student()
