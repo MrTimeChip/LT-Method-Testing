@@ -23,6 +23,20 @@ def linear_with_outlier():
         .empty() \
         .using(x, y)\
         .with_random(min_val=950, max_val=1050)\
+        .with_outlier(extreme_multiplier=-0.5) \
+        .extract()
+    return x, y, x_anom, y_anom
+
+
+def linear_with_negative_outlier():
+    x, y = casegenerator \
+        .generate_values(amount=1800) \
+        .with_random() \
+        .extract()
+    x_anom, y_anom = casegenerator \
+        .empty() \
+        .using(x, y)\
+        .with_random(min_val=950, max_val=1050)\
         .with_outlier(extreme_multiplier=0.5) \
         .extract()
     return x, y, x_anom, y_anom
