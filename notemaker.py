@@ -1,3 +1,11 @@
+import datetime
+
+
+def start_notemaking():
+    with open('notes.txt', 'w+') as f:
+        f.write(f'Тест {datetime.datetime.now()}\n')
+
+
 def note_case(case_name, anom_count):
     if anom_count != 0:
         make_note(f'Для {case_name} найдено {anom_count} аномалий.')
