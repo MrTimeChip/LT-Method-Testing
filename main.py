@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as ptchs
 import statistics
 import os
-import datetime
+import notemaker
 
 
 def check_method(method, plot_once=False, line_plot=False):
     all_cases = cases.all_cases()
-    make_note(f'---{method.__name__}{"-"*10}')
+    notemaker.note_method_name(method.__name__)
     for case in all_cases:
         x, y, x_anom, y_anom = case()
         result = method(y, y_anom)
@@ -30,15 +30,7 @@ def check_method(method, plot_once=False, line_plot=False):
         fig.canvas.set_window_title(title)
         plt.savefig(f'{path}/{title}.png')
         plt.close(fig)
-        if anom_count != 0:
-            make_note(f'Для {case.__name__} найдено {anom_count} аномалий.')
-        else:
-            make_note(f'Для {case.__name__} не найдено аномалий.')
-
-
-def make_note(text):
-    with open('notes.txt', 'a') as f:
-        f.write(f'{text}\n')
+        notemaker.note_case(case.__name__, anom_count)
 
 
 def check_empirical_rule():
@@ -70,8 +62,6 @@ def check_mwu():
 
 
 if __name__ == '__main__':
-    with open('notes.txt', 'w+') as f:
-        f.write(f'Тест {datetime.datetime.now()}\n')
     check_empirical_rule()
     check_z_score()
     check_z_score_with_window()
