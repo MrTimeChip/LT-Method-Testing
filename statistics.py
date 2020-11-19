@@ -51,7 +51,7 @@ def student_test(y, y_anom):
     alpha = 0.05
     t, p = ttest_ind(y, y_anom)
     if p < alpha:
-        return y_anom[0]
+        return [(0, y_anom[0])]
     return []
 
 
@@ -59,7 +59,7 @@ def mann_whitney_u_test(y, y_anom):
     alpha = 0.05
     t, p = mannwhitneyu(y, y_anom)
     if p < alpha:
-        return y_anom[0]
+        return [(0, y_anom[0])]
     return []
 
 
