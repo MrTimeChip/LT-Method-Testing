@@ -73,6 +73,22 @@ def grubbs_test(y, y_anom):
 
 
 def student_test(y, y_anom):
+    alpha = 0.05
+    t, p = ttest_ind(y, y_anom)
+    if p < alpha:
+        return y_anom[0]
+    return []
+
+
+def mann_whitney_u_test(y, y_anom):
+    alpha = 0.05
+    t, p = mannwhitneyu(y, y_anom)
+    if p < alpha:
+        return y_anom[0]
+    return []
+
+
+def student_test_window(y, y_anom):
     anomalies = []
     amount = len(y_anom)
     window = amount // 30
@@ -90,7 +106,7 @@ def student_test(y, y_anom):
     return anomalies
 
 
-def mann_whitney_u_test(y, y_anom):
+def mann_whitney_u_test_window(y, y_anom):
     anomalies = []
     amount = len(y_anom)
     window = amount // 30
