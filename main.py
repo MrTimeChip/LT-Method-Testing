@@ -72,3 +72,5 @@ if __name__ == '__main__':
     check_grubbs()
     check_student()
     check_mwu()
+    check_student_window()
+    check_mwu_window()
