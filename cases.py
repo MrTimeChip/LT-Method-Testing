@@ -2,11 +2,68 @@ import casegenerator
 
 
 def all_cases():
-    return [linear_no_anomaly, linear_with_outlier, linear_with_extreme_outliers,
-            linear_with_ramp_up, linear_with_ramp_down, linear_with_sudden_step,
-            linear_with_rise_no_anomaly, linear_with_slow_shift,
-            linear_with_rise_with_bump_down, linear_with_rise_with_bump_up,
-            periodic_with_negative_outliers, periodic_with_positive_outliers]
+    step_shifts = [make_custom_step_case(x, 300, 20) for x in
+                   range(300, 1500, 150)]
+
+    step_different_angles = [make_custom_step_case(500, x, 20) for x in
+                             range(100, 600, 100)]
+
+    bumps_different_heights = [make_custom_bump_case(500, 600, x) for x in
+                               range(10, 40, 5)]
+
+    bumps_different_sizes = [make_custom_bump_case(500, x, 10) for x in
+                             range(600, 1500, 150)]
+
+    result = [linear_no_anomaly, linear_with_outlier,
+              linear_with_extreme_outliers,
+              linear_with_ramp_up, linear_with_ramp_down,
+              linear_with_sudden_step,
+              linear_with_rise_no_anomaly, linear_with_slow_shift,
+              linear_with_rise_with_bump_down, linear_with_rise_with_bump_up,
+              periodic_with_negative_outliers, periodic_with_positive_outliers]
+
+    result.extend(step_shifts)
+    result.extend(step_different_angles)
+    result.extend(bumps_different_heights)
+    result.extend(bumps_different_sizes)
+    return result
+
+
+def make_custom_bump_case(bump_start, bump_end, inc):
+    over = bump_end - bump_start
+
+    def func():
+        x, y, _, _ = linear_with_rise_no_anomaly()
+        x_anom, y_anom = casegenerator.empty() \
+            .using(x, y) \
+            .with_random(min_val=950, max_val=1050) \
+            .with_step(bump_start, over, inc) \
+            .with_step(bump_end, over, -inc) \
+            .extract()
+        return x, y, x_anom, y_anom
+
+    result = func
+    result.__name__ = f'linear_with_bump_{bump_start}_{bump_end}_{over}_{inc}'
+    return result
+
+
+def make_custom_step_case(start, over, inc):
+    def func():
+        x, y = casegenerator \
+            .generate_values(amount=1800) \
+            .with_random() \
+            .extract()
+        x_anom, y_anom = casegenerator \
+            .empty() \
+            .using(x, y) \
+            .with_random(min_val=950, max_val=1050) \
+            .with_step(after=start, over=over, diff=inc) \
+            .extract()
+        return x, y, x_anom, y_anom
+
+    result = func
+    result.__name__ = f'linear_with_bump_{start}_{over}_{inc}'
+    return result
 
 
 def linear_no_anomaly():
@@ -21,8 +78,8 @@ def linear_with_outlier():
         .extract()
     x_anom, y_anom = casegenerator \
         .empty() \
-        .using(x, y)\
-        .with_random(min_val=950, max_val=1050)\
+        .using(x, y) \
+        .with_random(min_val=950, max_val=1050) \
         .with_outlier(extreme_multiplier=-0.5) \
         .extract()
     return x, y, x_anom, y_anom
@@ -35,8 +92,8 @@ def linear_with_negative_outlier():
         .extract()
     x_anom, y_anom = casegenerator \
         .empty() \
-        .using(x, y)\
-        .with_random(min_val=950, max_val=1050)\
+        .using(x, y) \
+        .with_random(min_val=950, max_val=1050) \
         .with_outlier(extreme_multiplier=0.5) \
         .extract()
     return x, y, x_anom, y_anom
@@ -108,11 +165,11 @@ def linear_with_rise_no_anomaly():
         .generate_values(amount=1800) \
         .with_random() \
         .extract()
-    x, y = casegenerator\
-        .empty()\
+    x, y = casegenerator \
+        .empty() \
         .using(x, y) \
         .with_random(min_val=950, max_val=1050) \
-        .with_step(0, 200, 30)\
+        .with_step(0, 200, 30) \
         .extract()
 
     return x, y, x, y
@@ -123,11 +180,11 @@ def linear_with_slow_shift():
         .generate_values(min_value=60, max_value=63, amount=1800) \
         .with_random(min_val=995, max_val=1005) \
         .extract()
-    x_anom, y_anom = casegenerator\
-        .empty()\
+    x_anom, y_anom = casegenerator \
+        .empty() \
         .using(x, y) \
         .with_random(min_val=995, max_val=1005) \
-        .with_step(300, 1000, 10)\
+        .with_step(300, 1000, 10) \
         .extract()
 
     return x, y, x_anom, y_anom
@@ -135,49 +192,49 @@ def linear_with_slow_shift():
 
 def linear_with_rise_with_bump_down():
     x, y, _, _ = linear_with_rise_no_anomaly()
-    x_anom, y_anom = casegenerator.empty()\
+    x_anom, y_anom = casegenerator.empty() \
         .using(x, y) \
         .with_random(min_val=950, max_val=1050) \
-        .with_step(500, 100, -10)\
-        .with_step(600, 100, 10)\
+        .with_step(500, 100, -10) \
+        .with_step(600, 100, 10) \
         .extract()
     return x, y, x_anom, y_anom
 
 
 def linear_with_rise_with_bump_up():
     x, y, _, _ = linear_with_rise_no_anomaly()
-    x_anom, y_anom = casegenerator.empty()\
+    x_anom, y_anom = casegenerator.empty() \
         .using(x, y) \
         .with_random(min_val=950, max_val=1050) \
-        .with_step(500, 100, 10)\
-        .with_step(600, 100, -10)\
+        .with_step(500, 100, 10) \
+        .with_step(600, 100, -10) \
         .extract()
     return x, y, x_anom, y_anom
 
 
 def periodic_with_positive_outliers():
-    x, y = casegenerator\
+    x, y = casegenerator \
         .generate_periodic_values(period_multiplier=0.03) \
         .with_random() \
         .extract()
-    x_anom, y_anom = casegenerator\
-        .empty()\
+    x_anom, y_anom = casegenerator \
+        .empty() \
         .using(x, y) \
         .with_random(min_val=950, max_val=1050) \
-        .with_outlier(extreme_multiplier=0.5)\
+        .with_outlier(extreme_multiplier=0.5) \
         .extract()
     return x, y, x_anom, y_anom
 
 
 def periodic_with_negative_outliers():
-    x, y = casegenerator\
-        .generate_periodic_values(period_multiplier=0.03)\
-        .with_random()\
+    x, y = casegenerator \
+        .generate_periodic_values(period_multiplier=0.03) \
+        .with_random() \
         .extract()
-    x_anom, y_anom = casegenerator\
-        .empty()\
+    x_anom, y_anom = casegenerator \
+        .empty() \
         .using(x, y) \
         .with_random() \
-        .with_outlier(extreme_multiplier=-0.5)\
+        .with_outlier(extreme_multiplier=-0.5) \
         .extract()
     return x, y, x_anom, y_anom
