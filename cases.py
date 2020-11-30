@@ -1,18 +1,30 @@
 import casegenerator
+import math
 
 
 def all_cases():
-    step_shifts = [make_custom_step_case(x, 300, 20) for x in
-                   range(300, 1500, 150)]
+    step_shifts = [make_custom_step_case(x, 300, 20)
+                   for x in range(300, 1500, 150)]
 
-    step_different_angles = [make_custom_step_case(500, x, 20) for x in
-                             range(100, 600, 100)]
+    step_different_angles = [make_custom_step_case(500, x, 20)
+                             for x in range(100, 600, 100)]
 
-    bumps_different_heights = [make_custom_bump_case(500, 600, x) for x in
-                               range(10, 40, 5)]
+    bumps_different_heights = [make_custom_bump_case(500, 600, x)
+                               for x in range(10, 40, 5)]
 
-    bumps_different_sizes = [make_custom_bump_case(500, x, 10) for x in
-                             range(600, 1500, 150)]
+    bumps_different_sizes = [make_custom_bump_case(500, x, 10)
+                             for x in range(600, 1500, 150)]
+
+    distribution_change_different_start = [
+        make_custom_distribution_change_case(x, 53, 72)
+        for x in range(500, 1600, 100)]
+
+    distribution_change_different_min_max = [
+        make_custom_distribution_change_case(
+            1100,
+            60 - math.floor(30*(1/x)),
+            65 + math.floor(32*(1/x)))
+        for x in range(1, 10)]
 
     result = [linear_no_anomaly, linear_with_outlier,
               linear_with_extreme_outliers,
@@ -26,6 +38,29 @@ def all_cases():
     result.extend(step_different_angles)
     result.extend(bumps_different_heights)
     result.extend(bumps_different_sizes)
+    result.extend(distribution_change_different_min_max)
+    result.extend(distribution_change_different_start)
+    return result
+
+
+def make_custom_distribution_change_case(start, new_min, new_max):
+    anom_amount = 1800-start
+
+    def func():
+        x, y = casegenerator \
+            .generate_values(amount=1800) \
+            .with_random() \
+            .extract()
+        _, y_add = casegenerator \
+            .generate_values(min_value=new_min, max_value=new_max,
+                             amount=anom_amount) \
+            .with_random()\
+            .extract()
+        y_anom = y[:start] + y_add
+        return x, y, x, y_anom
+
+    result = func
+    result.__name__ = f'linear_with_distribution_change_{start}_{new_min}_{new_max}'
     return result
 
 
