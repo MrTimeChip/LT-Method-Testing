@@ -1,3 +1,4 @@
+from reports_comparer.sapsan_results import SapsanResult, Mode
 import casegenerator
 import math
 
@@ -22,29 +23,46 @@ def all_cases():
     distribution_change_different_min_max = [
         make_custom_distribution_change_case(
             1100,
-            60 - math.floor(30*(1/x)),
-            65 + math.floor(32*(1/x)))
+            60 - math.floor(30 * (1 / x)),
+            65 + math.floor(32 * (1 / x)))
         for x in range(1, 10)]
 
-    result = [linear_no_anomaly, linear_with_outlier,
-              linear_with_extreme_outliers,
-              linear_with_ramp_up, linear_with_ramp_down,
-              linear_with_sudden_step,
-              linear_with_rise_no_anomaly, linear_with_slow_shift,
-              linear_with_rise_with_bump_down, linear_with_rise_with_bump_up,
-              periodic_with_negative_outliers, periodic_with_positive_outliers]
+    actual_cases = [
+        make_custom_file_report_avg_latency_case("resources/YT_test1",
+                                                 "resources/YT_test2"),
+        make_custom_file_report_avg_latency_case("resources/YT_2_test1",
+                                                 "resources/YT_2_test2"),
+        make_custom_file_report_avg_latency_case("resources/YT_3_test1",
+                                                 "resources/YT_3_test2"),
+        make_custom_file_report_avg_latency_case("resources/YT_4_test1",
+                                                 "resources/YT_4_test2")
+    ]
 
+    basic_cases = [linear_no_anomaly, linear_with_outlier,
+                   linear_with_extreme_outliers,
+                   linear_with_ramp_up, linear_with_ramp_down,
+                   linear_with_sudden_step,
+                   linear_with_rise_no_anomaly, linear_with_slow_shift,
+                   linear_with_rise_with_bump_down,
+                   linear_with_rise_with_bump_up,
+                   periodic_with_negative_outliers,
+                   periodic_with_positive_outliers]
+
+    result = []
+
+    result.extend(basic_cases)
     result.extend(step_shifts)
     result.extend(step_different_angles)
     result.extend(bumps_different_heights)
     result.extend(bumps_different_sizes)
     result.extend(distribution_change_different_min_max)
     result.extend(distribution_change_different_start)
+    result.extend(actual_cases)
     return result
 
 
 def make_custom_distribution_change_case(start, new_min, new_max):
-    anom_amount = 1800-start
+    anom_amount = 1800 - start
 
     def func():
         x, y = casegenerator \
@@ -54,7 +72,7 @@ def make_custom_distribution_change_case(start, new_min, new_max):
         _, y_add = casegenerator \
             .generate_values(min_value=new_min, max_value=new_max,
                              amount=anom_amount) \
-            .with_random()\
+            .with_random() \
             .extract()
         y_anom = y[:start] + y_add
         return x, y, x, y_anom
@@ -99,6 +117,19 @@ def make_custom_step_case(start, over, inc):
     result = func
     result.__name__ = f'linear_with_bump_{start}_{over}_{inc}'
     return result
+
+
+def make_custom_file_report_avg_latency_case(first_filename, second_filename):
+    def func():
+        return reports_comparer_avg_latency_case(first_filename,
+                                                 second_filename)
+
+    first_name = first_filename.split('/')[-1]
+    second_name = second_filename.split('/')[-1]
+
+    result = func
+    result.__name__ = f'actual_case_avg_latency_{first_name}_{second_name}'
+    return func
 
 
 def linear_no_anomaly():
@@ -273,3 +304,20 @@ def periodic_with_negative_outliers():
         .with_outlier(extreme_multiplier=-0.5) \
         .extract()
     return x, y, x_anom, y_anom
+
+
+def reports_comparer_avg_latency_case(first_name, second_name,
+                                      first_type=1, first_mode=Mode.File,
+                                      second_type=1, second_mode=Mode.File):
+    session1 = SapsanResult(first_name, first_type, first_mode)
+    session2 = SapsanResult(second_name, second_type, second_mode)
+
+    first_latency = session1.get_avg_latency()
+    x_first = first_latency[0][1]
+    y_first = first_latency[0][2]
+
+    second_latency = session2.get_avg_latency()
+    x_second = second_latency[0][1]
+    y_second = second_latency[0][2]
+
+    return x_first, y_first, x_second, y_second
