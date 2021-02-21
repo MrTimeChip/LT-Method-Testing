@@ -11,13 +11,15 @@ def check_method(method, plot_once=False, line_plot=False):
     cases_amount = len(all_cases)
     case_counter = 1
     notemaker.note_method_name(method.__name__)
-    print(f'{"-"*10}Тестирую {method.__name__} на {len(all_cases)} случаях{"-"*10}')
+    print(f'{"-" * 10}Тестирую {method.__name__} на {len(all_cases)} случаях{"-" * 10}')
     for case in all_cases:
         print(f'Тест случая {case.__name__} {case_counter}/{cases_amount}')
         x, y, x_anom, y_anom = case()
+        y = y[100:]  # Warm-up phase removal
         result = method(y, y_anom)
         fig, ax = plt.subplots()
-        plt.plot(y_anom)
+        plt.plot(y_anom, label='Anomaly')
+        plt.plot(y, label='Normal')
         title = f'{method.__name__}_with_{case.__name__}'
         anom_count = 0
         for t, anom in result:
@@ -59,34 +61,39 @@ def check_student():
 
 
 def check_mwu():
-    check_method(statistics.mann_whitney_u_test, plot_once=True, line_plot=True)
+    check_method(statistics.mann_whitney_u_test, plot_once=True,
+                 line_plot=True)
 
 
 def check_student_window():
-    check_method(statistics.student_test_window, plot_once=True, line_plot=True)
+    check_method(statistics.student_test_window, plot_once=True,
+                 line_plot=True)
 
 
 def check_mwu_window():
-    check_method(statistics.mann_whitney_u_test_window, plot_once=True, line_plot=True)
+    check_method(statistics.mann_whitney_u_test_window, plot_once=True,
+                 line_plot=True)
 
 
 def check_ks():
-    check_method(statistics.kolomogorov_smirnov_test, plot_once=True, line_plot=True)
+    check_method(statistics.kolomogorov_smirnov_test, plot_once=True,
+                 line_plot=True)
 
 
 def check_ks_window():
-    check_method(statistics.kolomogorov_smirnov_test_window, plot_once=True, line_plot=True)
+    check_method(statistics.kolomogorov_smirnov_test_window, plot_once=True,
+                 line_plot=True)
 
 
 if __name__ == '__main__':
     notemaker.start_notemaking()
-    # check_empirical_rule()
-    # check_z_score()
-    # check_interquartile_range()
-    # check_grubbs()
-    # check_student()
-    # check_mwu()
-    # check_student_window()
-    # check_mwu_window()
+    check_empirical_rule()
+    check_z_score()
+    check_interquartile_range()
+    check_grubbs()
+    check_student()
+    check_mwu()
+    check_student_window()
+    check_mwu_window()
     check_ks()
     check_ks_window()
