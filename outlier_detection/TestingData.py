@@ -13,4 +13,7 @@ class TestingData:
         self.__outliers.is_outlier(info_point)
 
     def are_outliers_among_data(self, info_points):
-        self.__outliers.are_outliers(info_points)
+        return self.__outliers.are_outliers(info_points)
+
+    def get_all_outliers(self):
+        return self.__outliers.get_all_outliers()
