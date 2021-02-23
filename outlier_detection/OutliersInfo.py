@@ -1,5 +1,5 @@
 from statistics import empirical_rule
-from numpy import std, mean
+from scipy.stats import tstd, tmean
 
 
 class OutliersInfo:
@@ -13,25 +13,29 @@ class OutliersInfo:
         self.__min_count = 0
         self.__max_count = 0
 
+    def get_all_outliers(self):
+        return self.__all_outliers
+
     def is_outlier(self, info_point, treat_original_as_normal=True):
-        return abs(info_point.y - self.__outliers_avg) > 3 * self.__outliers_std    # using empirical rule
+        return abs(info_point[1] - self.__outliers_avg) > 3 * self.__outliers_std
 
     def are_outliers(self, info_points, treat_original_as_normal=True):
         result = []
         for info_point in info_points:
-            result.append(self.is_outlier(info_point))
+            if self.is_outlier(info_point):
+                result.append(info_point)
         return result
 
     def analyze_data(self):
         amounts = []
         for data in self.__data_instances:
-            outliers = empirical_rule([], data.y)
+            outliers = empirical_rule([], data)
             self.__found_outliers.append(outliers)
             self.__all_outliers.extend(outliers)
             amounts.append(len(outliers))
         self.__min_count = min(amounts)
         self.__max_count = max(amounts)
-        self.__count_deviation = std(amounts)
+        self.__count_deviation = tstd(amounts)
 
-        self.__outliers_std = std(self.__all_outliers)
-        self.__outliers_avg = mean(self.__all_outliers)
+        self.__outliers_std = tstd(self.__all_outliers)[1]
+        self.__outliers_avg = tmean(self.__all_outliers)
