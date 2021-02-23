@@ -4,6 +4,7 @@ import matplotlib.patches as ptchs
 import statistics
 import os
 import notemaker
+import outlier_detection.outliers_detection
 
 
 def check_method(method, plot_once=False, line_plot=False):
@@ -16,6 +17,7 @@ def check_method(method, plot_once=False, line_plot=False):
         print(f'Тест случая {case.__name__} {case_counter}/{cases_amount}')
         x, y, x_anom, y_anom = case()
         y = y[100:]  # Warm-up phase removal
+        y_anom = y_anom[100:]
         result = method(y, y_anom)
         fig, ax = plt.subplots()
         plt.plot(y_anom, label='Anomaly')
@@ -85,6 +87,12 @@ def check_ks_window():
                  line_plot=True)
 
 
+def check_outlier_detection():
+    check_method(outlier_detection.outliers_detection.detect_outlier,
+                 plot_once=False,
+                 line_plot=False)
+
+
 if __name__ == '__main__':
     notemaker.start_notemaking()
     check_empirical_rule()
@@ -97,3 +105,4 @@ if __name__ == '__main__':
     check_mwu_window()
     check_ks()
     check_ks_window()
+    check_outlier_detection()
