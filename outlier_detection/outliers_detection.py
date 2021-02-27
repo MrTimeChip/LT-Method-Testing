@@ -7,4 +7,6 @@ def detect_outlier(y, y_anom):
     test_data_anom = TestingData([y_anom])
     test_data_anom.find_outliers()
 
-    return test_data_normal.are_outliers_among_data(test_data_anom.get_all_outliers())
+    count_info = test_data_normal.is_outliers_count_different(test_data_anom.get_outlier_count_info())
+
+    return test_data_normal.are_outliers_among_data(test_data_anom.get_all_outliers()), count_info
