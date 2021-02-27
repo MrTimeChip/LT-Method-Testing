@@ -20,6 +20,16 @@ def check_method(method, plot_once=False, line_plot=False):
         y_anom = y_anom[100:]
         result = method(y, y_anom)
         fig, ax = plt.subplots()
+        is_count_exceeded = False
+        if method.__name__ == 'detect_outlier':
+            is_count_exceeded = result[1]
+            result = result[0]
+            if is_count_exceeded:
+                plt.text(0.05,
+                         0.9,
+                         'Превышено количество аномалий',
+                         color='red',
+                         transform=ax.transAxes)
         plt.plot(y_anom, label='Anomaly')
         plt.plot(y, label='Normal')
         title = f'{method.__name__}_with_{case.__name__}'
@@ -36,6 +46,7 @@ def check_method(method, plot_once=False, line_plot=False):
         if not os.path.isdir(path):
             os.mkdir(path)
         fig.canvas.set_window_title(title)
+        plt.legend(loc='best')
         plt.savefig(f'{path}/{title}.png')
         plt.close(fig)
         notemaker.note_case(case.__name__, anom_count)
