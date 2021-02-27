@@ -1,4 +1,6 @@
 from reports_comparer.sapsan_results import SapsanResult, Mode
+from os import listdir
+from os.path import isfile, join
 import casegenerator
 import math
 
@@ -37,6 +39,26 @@ def all_cases():
         make_custom_file_report_avg_latency_case("resources/YT_4_test1",
                                                  "resources/YT_4_test2")
     ]
+
+    actual_cases_tank_keweb_14_934 = reports_comparer_compare_in_dir(
+        'resources/reports/tank/keweb/14.934')
+    actual_cases_tank_keweb_14_943 = reports_comparer_compare_in_dir(
+        'resources/reports/tank/keweb/14.943')
+    actual_cases_tank_keweb_14_944 = reports_comparer_compare_in_dir(
+        'resources/reports/tank/keweb/14.944')
+    actual_cases_tank_keweb_14_945 = reports_comparer_compare_in_dir(
+        'resources/reports/tank/keweb/14.945')
+    actual_cases_tank_keweb_14_946 = reports_comparer_compare_in_dir(
+        'resources/reports/tank/keweb/14.946')
+
+    actual_cases_tank_keweb = []
+    actual_cases_tank_keweb.extend(actual_cases_tank_keweb_14_934)
+    actual_cases_tank_keweb.extend(actual_cases_tank_keweb_14_943)
+    actual_cases_tank_keweb.extend(actual_cases_tank_keweb_14_944)
+    actual_cases_tank_keweb.extend(actual_cases_tank_keweb_14_945)
+    actual_cases_tank_keweb.extend(actual_cases_tank_keweb_14_946)
+
+    actual_cases.extend(actual_cases_tank_keweb)
 
     basic_cases = [linear_no_anomaly, linear_with_outlier,
                    linear_with_extreme_outliers,
@@ -321,3 +343,16 @@ def reports_comparer_avg_latency_case(first_name, second_name,
     y_second = second_latency[0][2]
 
     return x_first, y_first, x_second, y_second
+
+
+def reports_comparer_compare_in_dir(dir):
+    reports = [f for f in listdir(dir) if isfile(join(dir, f))]
+    reports_len = len(reports) - 1
+
+    comparers = []
+
+    for j in range(0, reports_len):
+        comparers.append(make_custom_file_report_avg_latency_case(f'{dir}/{reports[j]}',
+                                                                  f'{dir}/{reports[j+1]}'))
+
+    return comparers
