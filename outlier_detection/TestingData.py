@@ -23,3 +23,9 @@ class TestingData:
 
     def get_outlier_count_info(self):
         return self.__outliers.get_outlier_count_info()
+
+    def is_density_exceeded(self, density):
+        return self.__outliers.is_density_exceeded(density)
+
+    def get_max_density(self):
+        return self.__outliers.get_max_density()
