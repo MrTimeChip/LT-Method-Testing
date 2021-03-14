@@ -25,7 +25,7 @@ class OutliersInfo:
         return self.__max_density
 
     def is_density_exceeded(self, density):
-        deviation = math.floor(self.__max_density * 0.15)
+        deviation = self.__max_density * 0.25
         return self.__max_density + deviation < density
 
     def is_outlier(self, info_point, treat_original_as_normal=True):
@@ -49,11 +49,11 @@ class OutliersInfo:
         amounts = []
         max_density = 0
         for data in self.__data_instances:
-            outliers = empirical_rule([], data)
-            self.__found_outliers.append(outliers)
-            self.__all_outliers.extend(outliers)
-
-            density = self.analyze_max_density(data, outliers)
+            result = empirical_rule([], data)
+            self.__found_outliers.append(result.anomalies)
+            self.__all_outliers.extend(result.anomalies)
+            amounts.append(len(result.anomalies))
+            density = self.analyze_max_density(data, result.anomalies)
             if density > max_density:
                 max_density = density
         self.__min_count = min(amounts)
@@ -79,10 +79,10 @@ class OutliersInfo:
             all_outliers_in_range = [(t, x) for t, x in outliers if
                                      left_border <= t <= right_border]
             outliers_count = len(all_outliers_in_range)
-            density = len(data) / outliers_count
+            density = outliers_count / len(data_slice)
             if density > max_density:
-                max_density = max_density
+                max_density = density
             left_border += step
-            if left_border >= data_length:
+            if left_border >= data_length - 100:
                 break
         return max_density
