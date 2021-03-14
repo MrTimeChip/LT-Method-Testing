@@ -1,5 +1,6 @@
 from statistics import empirical_rule
 from scipy.stats import tstd, tmean
+import math
 
 
 class OutliersInfo:
@@ -30,7 +31,10 @@ class OutliersInfo:
         return result
 
     def is_outlier_count_different(self, outlier_count_info):
-        return self.__max_count + self.__count_deviation < outlier_count_info[2]
+        deviation = self.__count_deviation
+        if deviation == 0:
+            deviation = math.floor(self.__max_count * 0.15)
+        return self.__max_count + deviation < outlier_count_info[2]
 
     def analyze_data(self):
         amounts = []
