@@ -20,21 +20,23 @@ def check_method(method, plot_once=False, line_plot=False):
         y_anom = y_anom[100:]
         result = method(y, y_anom)
         fig, ax = plt.subplots()
-        is_count_exceeded = False
-        if method.__name__ == 'detect_outlier':
-            is_count_exceeded = result[1]
-            result = result[0]
-            if is_count_exceeded:
-                plt.text(0.05,
-                         0.9,
-                         'Превышено количество аномалий',
-                         color='red',
-                         transform=ax.transAxes)
+        if result.is_outliers_count_exceeded:
+            plt.text(0.05,
+                     0.9,
+                     'Превышено количество выбросов',
+                     color='red',
+                     transform=ax.transAxes)
+        if result.is_outliers_density_exceeded:
+            plt.text(0.05,
+                     0.8,
+                     'Превышена плотность выбросов',
+                     color='red',
+                     transform=ax.transAxes)
         plt.plot(y_anom, label='Anomaly')
         plt.plot(y, label='Normal')
         title = f'{method.__name__}_with_{case.__name__}'
         anom_count = 0
-        for t, anom in result:
+        for t, anom in result.anomalies:
             anom_count += 1
             circle = ptchs.Circle((t, anom), edgecolor='red', fill=False)
             ax.add_patch(circle)
@@ -106,14 +108,14 @@ def check_outlier_detection():
 
 if __name__ == '__main__':
     notemaker.start_notemaking()
-    check_empirical_rule()
-    check_z_score()
-    check_interquartile_range()
-    check_grubbs()
-    check_student()
-    check_mwu()
-    check_student_window()
-    check_mwu_window()
-    check_ks()
-    check_ks_window()
+    # check_empirical_rule()
+    # check_z_score()
+    # check_interquartile_range()
+    # check_grubbs()
+    # check_student()
+    # check_mwu()
+    # check_student_window()
+    # check_mwu_window()
+    # check_ks()
+    # check_ks_window()
     check_outlier_detection()
