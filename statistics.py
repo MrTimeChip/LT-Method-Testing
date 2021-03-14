@@ -1,4 +1,5 @@
 import numpy
+from TestResult import TestResult
 from outliers import smirnov_grubbs as grubbs
 from scipy.stats import zscore, iqr, ttest_ind, mannwhitneyu, ks_2samp
 
@@ -12,7 +13,7 @@ def empirical_rule(y, y_anom):
         if abs(x - avg) > 3 * std:
             anomalies.append((t, x))
         t += 1
-    return anomalies
+    return TestResult(anomalies)
 
 
 def z_score(y, y_anom):
@@ -23,7 +24,7 @@ def z_score(y, y_anom):
         if x > 3:
             anomalies.append((t, y_anom[t]))
         t += 1
-    return anomalies
+    return TestResult(anomalies)
 
 
 def interquartile_range(y, y_anom):
@@ -35,7 +36,7 @@ def interquartile_range(y, y_anom):
         if abs(x - median) > 1.5 * itq:
             anomalies.append((t, x))
         t += 1
-    return anomalies
+    return TestResult(anomalies)
 
 
 def grubbs_test(y, y_anom):
@@ -44,7 +45,7 @@ def grubbs_test(y, y_anom):
     values = grubbs.max_test_outliers(y_anom, alpha=.05)
     for x, y in zip(indices, values):
         anomalies.append((x, y))
-    return anomalies
+    return TestResult(anomalies)
 
 
 def student_test(y, y_anom):
@@ -52,7 +53,7 @@ def student_test(y, y_anom):
     t, p = ttest_ind(y, y_anom)
     if p < alpha:
         return [(0, y_anom[0])]
-    return []
+    return TestResult([])
 
 
 def mann_whitney_u_test(y, y_anom):
@@ -60,7 +61,7 @@ def mann_whitney_u_test(y, y_anom):
     t, p = mannwhitneyu(y, y_anom)
     if p < alpha:
         return [(0, y_anom[0])]
-    return []
+    return TestResult([])
 
 
 def student_test_window(y, y_anom):
@@ -78,7 +79,7 @@ def student_test_window(y, y_anom):
             ind = right_edge - window
             anomalies.append((ind, y_anom[ind]))
         right_edge += step
-    return anomalies
+    return TestResult(anomalies)
 
 
 def mann_whitney_u_test_window(y, y_anom):
@@ -96,7 +97,7 @@ def mann_whitney_u_test_window(y, y_anom):
             ind = right_edge - window
             anomalies.append((ind, y_anom[ind]))
         right_edge += step
-    return anomalies
+    return TestResult(anomalies)
 
 
 def kolomogorov_smirnov_test(y, y_anom):
@@ -104,7 +105,7 @@ def kolomogorov_smirnov_test(y, y_anom):
     t, p = ks_2samp(y, y_anom)
     if p < alpha:
         return [(0, y_anom[0])]
-    return []
+    return TestResult([])
 
 
 def kolomogorov_smirnov_test_window(y, y_anom):
@@ -122,4 +123,4 @@ def kolomogorov_smirnov_test_window(y, y_anom):
             ind = right_edge - window
             anomalies.append((ind, y_anom[ind]))
         right_edge += step
-    return anomalies
+    return TestResult(anomalies)
