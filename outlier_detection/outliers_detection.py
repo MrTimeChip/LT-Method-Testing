@@ -1,4 +1,5 @@
 from outlier_detection.TestingData import TestingData
+from TestResult import  TestResult
 
 
 def detect_outlier(y, y_anom):
@@ -7,6 +8,12 @@ def detect_outlier(y, y_anom):
     test_data_anom = TestingData([y_anom])
     test_data_anom.find_outliers()
 
-    count_info = test_data_normal.is_outliers_count_different(test_data_anom.get_outlier_count_info())
+    found_outliers = test_data_normal.are_outliers_among_data(test_data_anom.get_all_outliers())
+    count_exceeded = test_data_normal.is_outliers_count_different(test_data_anom.get_outlier_count_info())
+    density_exceeded = test_data_normal.is_density_exceeded(test_data_anom.get_max_density())
 
-    return test_data_normal.are_outliers_among_data(test_data_anom.get_all_outliers()), count_info
+    result = TestResult(found_outliers)
+    result.is_outliers_count_exceeded = count_exceeded
+    result.is_outliers_density_exceeded = density_exceeded
+
+    return result
