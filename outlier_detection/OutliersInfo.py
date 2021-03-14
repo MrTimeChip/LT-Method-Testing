@@ -13,6 +13,7 @@ class OutliersInfo:
         self.__count_deviation = 0
         self.__min_count = 0
         self.__max_count = 0
+        self.__max_density = 0
 
     def get_all_outliers(self):
         return self.__all_outliers
@@ -20,8 +21,16 @@ class OutliersInfo:
     def get_outlier_count_info(self):
         return self.__count_deviation, self.__min_count, self.__max_count
 
+    def get_max_density(self):
+        return self.__max_density
+
+    def is_density_exceeded(self, density):
+        deviation = math.floor(self.__max_density * 0.15)
+        return self.__max_density + deviation < density
+
     def is_outlier(self, info_point, treat_original_as_normal=True):
-        return abs(info_point[1] - self.__outliers_avg) > 3 * self.__outliers_std
+        return abs(
+            info_point[1] - self.__outliers_avg) > 3 * self.__outliers_std
 
     def are_outliers(self, info_points, treat_original_as_normal=True):
         result = []
@@ -38,15 +47,42 @@ class OutliersInfo:
 
     def analyze_data(self):
         amounts = []
+        max_density = 0
         for data in self.__data_instances:
             outliers = empirical_rule([], data)
             self.__found_outliers.append(outliers)
             self.__all_outliers.extend(outliers)
-            amounts.append(len(outliers))
+
+            density = self.analyze_max_density(data, outliers)
+            if density > max_density:
+                max_density = density
         self.__min_count = min(amounts)
         self.__max_count = max(amounts)
         if len(amounts) > 1:
             self.__count_deviation = tstd(amounts)
 
-        self.__outliers_std = tstd(self.__all_outliers)[1]
-        self.__outliers_avg = tmean(self.__all_outliers)
+        if len(self.__all_outliers) > 0:
+            self.__outliers_std = tstd(self.__all_outliers)[1]
+            self.__outliers_avg = tmean(self.__all_outliers)
+
+        self.__max_density = max_density
+
+    def analyze_max_density(self, data, outliers):
+        data_length = len(data)
+        window = 100
+        left_border = 0
+        max_density = 0
+        step = 10
+        while True:
+            right_border = left_border + window
+            data_slice = data[left_border:right_border]
+            all_outliers_in_range = [(t, x) for t, x in outliers if
+                                     left_border <= t <= right_border]
+            outliers_count = len(all_outliers_in_range)
+            density = len(data) / outliers_count
+            if density > max_density:
+                max_density = max_density
+            left_border += step
+            if left_border >= data_length:
+                break
+        return max_density
