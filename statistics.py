@@ -1,7 +1,7 @@
 import numpy
 from TestResult import TestResult
 from outliers import smirnov_grubbs as grubbs
-from scipy.stats import zscore, iqr, ttest_ind, mannwhitneyu, ks_2samp
+from scipy.stats import zscore, iqr, ttest_ind, mannwhitneyu, ks_2samp, shapiro
 
 
 def empirical_rule(y, y_anom):
@@ -52,7 +52,7 @@ def student_test(y, y_anom):
     alpha = 0.05
     t, p = ttest_ind(y, y_anom)
     if p < alpha:
-        return [(0, y_anom[0])]
+        return TestResult([(0, y_anom[0])])
     return TestResult([])
 
 
@@ -60,7 +60,7 @@ def mann_whitney_u_test(y, y_anom):
     alpha = 0.05
     t, p = mannwhitneyu(y, y_anom)
     if p < alpha:
-        return [(0, y_anom[0])]
+        return TestResult([(0, y_anom[0])])
     return TestResult([])
 
 
@@ -104,7 +104,7 @@ def kolomogorov_smirnov_test(y, y_anom):
     alpha = 0.05
     t, p = ks_2samp(y, y_anom)
     if p < alpha:
-        return [(0, y_anom[0])]
+        return TestResult([(0, y_anom[0])])
     return TestResult([])
 
 
@@ -124,3 +124,9 @@ def kolomogorov_smirnov_test_window(y, y_anom):
             anomalies.append((ind, y_anom[ind]))
         right_edge += step
     return TestResult(anomalies)
+
+
+def shapiro_test(y):
+    alpha = 0.05
+    t, p = shapiro(y)
+    return p >= alpha
