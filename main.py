@@ -4,7 +4,7 @@ import matplotlib.patches as ptchs
 import statistics
 import os
 import notemaker
-import outlier_detection.outliers_detection
+import outlier_detection.anomaly_detection
 
 
 def check_method(method, plot_once=False, line_plot=False):
@@ -101,7 +101,7 @@ def check_ks_window():
 
 
 def check_outlier_detection():
-    check_method(outlier_detection.outliers_detection.detect_outlier,
+    check_method(outlier_detection.anomaly_detection.detect_outlier,
                  plot_once=False,
                  line_plot=False)
 
