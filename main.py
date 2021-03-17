@@ -7,7 +7,7 @@ import notemaker
 import outlier_detection.anomaly_detection
 
 
-def check_method(method, plot_once=False, line_plot=False):
+def check_method(method):
     all_cases = cases.all_cases()
     cases_amount = len(all_cases)
     case_counter = 1
@@ -36,16 +36,15 @@ def check_method(method, plot_once=False, line_plot=False):
         anom_label = add_distribution_to_name('Anomaly', y)
         plt.plot(y_anom, label=anom_label)
         plt.plot(y, label=normal_label)
+        if result.shift_point is not None:
+            t, _ = result.shift_point
+            plt.axvline(x=t, color='yellow')
         title = f'{method.__name__}_with_{case.__name__}'
         anom_count = 0
         for t, anom in result.anomalies:
             anom_count += 1
             circle = ptchs.Circle((t, anom), edgecolor='red', fill=False)
             ax.add_patch(circle)
-            if line_plot:
-                plt.axvline(x=t, color='red')
-            if plot_once:
-                break
         path = f'results/{method.__name__}'
         if not os.path.isdir(path):
             os.mkdir(path)
@@ -74,38 +73,31 @@ def check_grubbs():
 
 
 def check_student():
-    check_method(statistics.student_test, plot_once=True, line_plot=True)
+    check_method(statistics.student_test)
 
 
 def check_mwu():
-    check_method(statistics.mann_whitney_u_test, plot_once=True,
-                 line_plot=True)
+    check_method(statistics.mann_whitney_u_test)
 
 
 def check_student_window():
-    check_method(statistics.student_test_window, plot_once=True,
-                 line_plot=True)
+    check_method(statistics.student_test_window)
 
 
 def check_mwu_window():
-    check_method(statistics.mann_whitney_u_test_window, plot_once=True,
-                 line_plot=True)
+    check_method(statistics.mann_whitney_u_test_window)
 
 
 def check_ks():
-    check_method(statistics.kolomogorov_smirnov_test, plot_once=True,
-                 line_plot=True)
+    check_method(statistics.kolomogorov_smirnov_test)
 
 
 def check_ks_window():
-    check_method(statistics.kolomogorov_smirnov_test_window, plot_once=True,
-                 line_plot=True)
+    check_method(statistics.kolomogorov_smirnov_test_window)
 
 
 def check_outlier_detection():
-    check_method(outlier_detection.anomaly_detection.detect_outlier,
-                 plot_once=False,
-                 line_plot=False)
+    check_method(outlier_detection.anomaly_detection.detect_outlier)
 
 
 def add_distribution_to_name(name, y):
