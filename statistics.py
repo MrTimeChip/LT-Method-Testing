@@ -49,23 +49,27 @@ def grubbs_test(y, y_anom):
 
 
 def student_test(y, y_anom):
+    test_result = TestResult([])
     alpha = 0.05
     t, p = ttest_ind(y, y_anom)
     if p < alpha:
-        return TestResult([(0, y_anom[0])])
-    return TestResult([])
+        test_result.add_shift_point((0, y_anom[0]))
+        return test_result
+    return test_result
 
 
 def mann_whitney_u_test(y, y_anom):
+    test_result = TestResult([])
     alpha = 0.05
     t, p = mannwhitneyu(y, y_anom)
     if p < alpha:
-        return TestResult([(0, y_anom[0])])
-    return TestResult([])
+        test_result.add_shift_point((0, y_anom[0]))
+        return test_result
+    return test_result
 
 
 def student_test_window(y, y_anom):
-    anomalies = []
+    test_result = TestResult([])
     amount = len(y_anom)
     window = amount // 30
     step = window // 2
@@ -77,13 +81,13 @@ def student_test_window(y, y_anom):
         t, p = ttest_ind(values_y, values_y_anom)
         if p < alpha:
             ind = right_edge - window
-            anomalies.append((ind, y_anom[ind]))
+            test_result.add_shift_point((ind, y_anom[ind]))
         right_edge += step
-    return TestResult(anomalies)
+    return test_result
 
 
 def mann_whitney_u_test_window(y, y_anom):
-    anomalies = []
+    test_result = TestResult([])
     amount = len(y_anom)
     window = amount // 30
     step = window // 2
@@ -95,21 +99,23 @@ def mann_whitney_u_test_window(y, y_anom):
         t, p = mannwhitneyu(values_y, values_y_anom)
         if p < alpha:
             ind = right_edge - window
-            anomalies.append((ind, y_anom[ind]))
+            test_result.add_shift_point((ind, y_anom[ind]))
         right_edge += step
-    return TestResult(anomalies)
+    return test_result
 
 
 def kolomogorov_smirnov_test(y, y_anom):
+    test_result = TestResult([])
     alpha = 0.05
     t, p = ks_2samp(y, y_anom)
     if p < alpha:
-        return TestResult([(0, y_anom[0])])
-    return TestResult([])
+        test_result.add_shift_point((0, y_anom[0]))
+        return test_result
+    return test_result
 
 
 def kolomogorov_smirnov_test_window(y, y_anom):
-    anomalies = []
+    test_result = TestResult([])
     amount = len(y_anom)
     window = amount // 30
     step = window // 2
@@ -121,9 +127,9 @@ def kolomogorov_smirnov_test_window(y, y_anom):
         t, p = ks_2samp(values_y, values_y_anom)
         if p < alpha:
             ind = right_edge - window
-            anomalies.append((ind, y_anom[ind]))
+            test_result.add_shift_point((ind, y_anom[ind]))
         right_edge += step
-    return TestResult(anomalies)
+    return test_result
 
 
 def shapiro_test(y):
