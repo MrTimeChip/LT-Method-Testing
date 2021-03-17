@@ -1,4 +1,5 @@
 from outlier_detection.OutliersInfo import OutliersInfo
+from statistics import kolomogorov_smirnov_test_window
 
 
 class TestingData:
@@ -29,3 +30,8 @@ class TestingData:
 
     def get_max_density(self):
         return self.__outliers.get_max_density()
+
+    def get_shift_point(self, y_other):
+        main_data = self.__data_instances[0]
+        point = kolomogorov_smirnov_test_window(main_data, y_other).shift_point
+        return point
