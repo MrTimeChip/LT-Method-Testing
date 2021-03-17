@@ -1,4 +1,3 @@
-
 class TestResult:
     def __init__(self, anomalies):
         self.anomalies = anomalies
