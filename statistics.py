@@ -118,7 +118,7 @@ def kolomogorov_smirnov_test_window(y, y_anom):
     test_result = TestResult([])
     amount = len(y_anom)
     window = amount // 30
-    step = window // 2
+    step = window // 2 + 1
     right_edge = window
     alpha = 0.05
     while right_edge < amount:
@@ -128,6 +128,7 @@ def kolomogorov_smirnov_test_window(y, y_anom):
         if p < alpha:
             ind = right_edge - window
             test_result.add_shift_point((ind, y_anom[ind]))
+            return test_result
         right_edge += step
     return test_result
 
