@@ -16,4 +16,6 @@ def detect_outlier(y, y_anom):
     result.is_outliers_count_exceeded = count_exceeded
     result.is_outliers_density_exceeded = density_exceeded
 
+    result.add_shift_point(test_data_normal.get_shift_point(y_anom))
+
     return result
