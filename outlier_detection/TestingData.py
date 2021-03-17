@@ -1,5 +1,6 @@
 from outlier_detection.OutliersInfo import OutliersInfo
 from statistics import kolomogorov_smirnov_test_window
+from scipy.interpolate import interp1d
 
 
 class TestingData:
@@ -33,5 +34,13 @@ class TestingData:
 
     def get_shift_point(self, y_other):
         main_data = self.__data_instances[0]
-        point = kolomogorov_smirnov_test_window(main_data, y_other).shift_point
+        main_x = [x for x in range(0, len(main_data))]
+        other_x = [x for x in range(0, len(y_other))]
+        main_interp = interp1d(main_x, main_data)
+        other_interp = interp1d(other_x, y_other)
+        x_new = [x for x in range(0, len(main_data)//5)]
+        main_filtered = list(main_interp(x_new))
+        other_filtered = list(other_interp(x_new))
+        print(main_filtered, other_filtered, x_new)
+        point = kolomogorov_smirnov_test_window(main_filtered, other_filtered).shift_point
         return point
