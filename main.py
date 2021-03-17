@@ -32,8 +32,10 @@ def check_method(method, plot_once=False, line_plot=False):
                      'Превышена плотность выбросов',
                      color='red',
                      transform=ax.transAxes)
-        plt.plot(y_anom, label='Anomaly')
-        plt.plot(y, label='Normal')
+        normal_label = add_distribution_to_name('Normal', y)
+        anom_label = add_distribution_to_name('Anomaly', y)
+        plt.plot(y_anom, label=anom_label)
+        plt.plot(y, label=normal_label)
         title = f'{method.__name__}_with_{case.__name__}'
         anom_count = 0
         for t, anom in result.anomalies:
@@ -104,6 +106,15 @@ def check_outlier_detection():
     check_method(outlier_detection.anomaly_detection.detect_outlier,
                  plot_once=False,
                  line_plot=False)
+
+
+def add_distribution_to_name(name, y):
+    result = ''
+    if statistics.shapiro_test(y):
+        result = f'{name} (normal distribution)'
+    else:
+        result = f'{name} (NOT normal distribution)'
+    return result
 
 
 if __name__ == '__main__':
