@@ -20,14 +20,14 @@ class TestingData:
     def get_all_outliers(self):
         return self.__outliers.get_all_outliers()
 
-    def is_outliers_count_different(self, count_info):
-        return self.__outliers.is_outlier_count_different(count_info)
+    def get_count_difference(self, count_info):
+        return self.__outliers.get_count_difference(count_info)
 
     def get_outlier_count_info(self):
         return self.__outliers.get_outlier_count_info()
 
-    def is_density_exceeded(self, density):
-        return self.__outliers.is_density_exceeded(density)
+    def get_density_difference(self, density):
+        return self.__outliers.get_density_difference(density)
 
     def get_max_density(self):
         return self.__outliers.get_max_density()
