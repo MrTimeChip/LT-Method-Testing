@@ -20,18 +20,16 @@ def check_method(method):
         y_anom = y_anom[100:]
         result = method(y, y_anom)
         fig, ax = plt.subplots()
-        if result.is_outliers_count_exceeded:
-            plt.text(0.05,
-                     0.9,
-                     'Превышено количество выбросов',
-                     color='red',
-                     transform=ax.transAxes)
-        if result.is_outliers_density_exceeded:
-            plt.text(0.05,
-                     0.8,
-                     'Превышена плотность выбросов',
-                     color='red',
-                     transform=ax.transAxes)
+        plt.text(0.05,
+                 0.9,
+                 f'Количестов выбросов {result.outliers_count_compared} от оригинала',
+                 color='red',
+                 transform=ax.transAxes)
+        plt.text(0.05,
+                 0.8,
+                 f'Максимальная плотность выбросов {result.outliers_density_compared} от оригинала',
+                 color='red',
+                 transform=ax.transAxes)
         normal_label = add_distribution_to_name('Normal', y)
         anom_label = add_distribution_to_name('Anomaly', y)
         plt.plot(y_anom, label=anom_label)
