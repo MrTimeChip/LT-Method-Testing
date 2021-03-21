@@ -24,9 +24,11 @@ class OutliersInfo:
     def get_max_density(self):
         return self.__max_density
 
-    def is_density_exceeded(self, density):
-        deviation = self.__max_density * 0.25
-        return self.__max_density + deviation < density
+    def get_density_difference(self, density):
+        result = 1 - self.__max_density / density
+        if result < 0:
+            result -= 1
+        return result
 
     def is_outlier(self, info_point, treat_original_as_normal=True):
         return abs(
@@ -39,11 +41,8 @@ class OutliersInfo:
                 result.append(info_point)
         return result
 
-    def is_outlier_count_different(self, outlier_count_info):
-        deviation = self.__count_deviation
-        if deviation == 0:
-            deviation = math.floor(self.__max_count * 0.15)
-        return self.__max_count + deviation < outlier_count_info[2]
+    def get_count_difference(self, outlier_count_info):
+        return self.__max_count - outlier_count_info[2]
 
     def analyze_data(self):
         amounts = []
