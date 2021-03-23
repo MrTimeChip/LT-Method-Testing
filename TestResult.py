@@ -3,7 +3,7 @@ class TestResult:
         self.anomalies = anomalies
         self.outliers_count_compared = 0
         self.outliers_density_compared = 0
-        self.shift_point = None
+        self.shift_points = None
 
-    def add_shift_point(self, point):
-        self.shift_point = point
+    def add_shift_points(self, points):
+        self.shift_points = points
