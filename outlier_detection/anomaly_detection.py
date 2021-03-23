@@ -16,6 +16,9 @@ def detect_outlier(y, y_anom):
     result.outliers_count_compared = count
     result.outliers_density_compared = density
 
-    result.add_shift_point(test_data_normal.get_shift_point(y_anom))
+    test_data_normal.calculate_window_statistics()
+    test_data_anom.calculate_window_statistics()
+
+    result.add_shift_points(test_data_normal.get_shift_points(test_data_anom.get_window_statistics()))
 
     return result
