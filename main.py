@@ -34,8 +34,7 @@ def check_method(method):
         anom_label = add_distribution_to_name('Anomaly', y)
         plt.plot(y_anom, label=anom_label)
         plt.plot(y, label=normal_label)
-        if result.shift_point is not None:
-            t, _ = result.shift_point
+        for t, _ in result.shift_points:
             plt.axvline(x=t, color='yellow')
         title = f'{method.__name__}_with_{case.__name__}'
         anom_count = 0
