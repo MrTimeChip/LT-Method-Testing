@@ -1,12 +1,15 @@
 from outlier_detection.OutliersInfo import OutliersInfo
-from statistics import kolomogorov_smirnov_test_window
-from scipy.interpolate import interp1d
+import numpy as np
 
 
 class TestingData:
     def __init__(self, data_instances):
         self.__data_instances = data_instances
         self.__outliers = OutliersInfo(data_instances)
+        self.__window_statistics = []
+
+    def get_window_statistics(self):
+        return list(self.__window_statistics)
 
     def find_outliers(self):
         self.__outliers.analyze_data()
@@ -32,15 +35,41 @@ class TestingData:
     def get_max_density(self):
         return self.__outliers.get_max_density()
 
-    def get_shift_point(self, y_other):
-        main_data = self.__data_instances[0]
-        main_x = [x for x in range(0, len(main_data))]
-        other_x = [x for x in range(0, len(y_other))]
-        main_interp = interp1d(main_x, main_data)
-        other_interp = interp1d(other_x, y_other)
-        x_new = [x for x in range(0, len(main_data)//5)]
-        main_filtered = list(main_interp(x_new))
-        other_filtered = list(other_interp(x_new))
-        print(main_filtered, other_filtered, x_new)
-        point = kolomogorov_smirnov_test_window(main_filtered, other_filtered).shift_point
-        return point
+    def get_shift_points(self, data_other):
+        result = []
+        data = self.__window_statistics
+        amount = min(len(data_other), len(data))
+
+        for i in range(0, amount):
+            _, mean, std = data[i]
+            point_other, mean_other, std_other = data_other[i]
+            if abs(mean * 1.5) < abs(mean_other) and std < std_other:
+                print(point_other, mean, mean_other)
+                result.append(point_other)
+        return result
+
+    def calculate_window_statistics(self):
+        self.__window_statistics = self.make_window_statistics(self.__data_instances[0])
+
+    def make_window_statistics(self, data):
+        result = []
+        amount = len(data)
+        window = 30
+        step = 15
+        right_edge = window
+        last_window = False
+        while right_edge <= amount:
+            x = right_edge - window
+            y = right_edge
+            values = data[x:y]
+            point = (x, y)
+            mean = np.mean(values)
+            std = np.std(values)
+            result.append((point, mean, std))
+            right_edge += step
+            if last_window:
+                break
+            if right_edge > amount:
+                right_edge = amount
+                last_window = True
+        return result
